@@ -18,12 +18,17 @@ Base class used for all games, all games must inherit from this
 #include "game-registry.h"
 #include "buffer.h"
 
-// We want all games to have same observation space. So all these
-// constants here related to observation space are constants forever.
-const int RES_W = 64;
-const int RES_H = 64;
+// Defaults (legacy behavior)
+inline constexpr int kDefaultObsW = 64;
+inline constexpr int kDefaultObsH = 64;
+inline constexpr int RENDER_RES   = 512;
 
-const int RENDER_RES = 512;
+// Global observation size for all games in this process.
+extern int g_obs_w;
+extern int g_obs_h;
+
+// Set once before creating any Game instances.
+void SetGlobalObservationSize(int w, int h);
 
 void bgr32_to_rgb888(void *dst_rgb888, void *src_bgr32, int w, int h);
 
@@ -92,7 +97,9 @@ class Game {
 
     int fixed_asset_seed = 0;
 
-    uint32_t render_buf[RES_W * RES_H];
+    // uint32_t render_buf[RES_W * RES_H];
+    // replace the fixed-size array with a dynamic buffer
+    std::vector<uint32_t> render_buf;
 
     int cur_time = 0;
 

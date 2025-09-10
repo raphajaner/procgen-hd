@@ -242,6 +242,8 @@ class ProcgenGym3Env(BaseProcgenEnv):
                 "use_backgrounds": bool(use_backgrounds),
                 "paint_vel_info": bool(paint_vel_info),
                 "distribution_mode": distribution_mode,
+                "obs_width": int(kwargs.pop("obs_width", 64)),
+                "obs_height": int(kwargs.pop("obs_height", 64)),
             }
         super().__init__(num, env_name, options, **kwargs)
         

@@ -2,6 +2,15 @@
 #include "game.h"
 #include "vecoptions.h"
 
+// define the globals
+int g_obs_w = kDefaultObsW;
+int g_obs_h = kDefaultObsH;
+
+void SetGlobalObservationSize(int w, int h) {
+  if (w <= 0 || h <= 0) throw std::runtime_error("Invalid observation size");
+  g_obs_w = w; g_obs_h = h;
+}
+
 // this should be updated whenever the state format or environments may have changed
 const int SERIALIZE_VERSION = 0;
 
@@ -34,6 +43,9 @@ Game::Game(std::string name) : game_name(name) {
     step_data.reward = 0;
     step_data.done = true;
     step_data.level_complete = false;
+
+    render_buf.resize(static_cast<size_t>(g_obs_w) * static_cast<size_t>(g_obs_h));
+
 }
 
 Game::~Game() {
@@ -155,8 +167,8 @@ void Game::step() {
 }
 
 void Game::observe() {
-    render_to_buf(render_buf, RES_W, RES_H, false);
-    bgr32_to_rgb888(obs_bufs[0], render_buf, RES_W, RES_H);
+    render_to_buf(render_buf.data(), g_obs_w, g_obs_h, false);
+    bgr32_to_rgb888(obs_bufs[0], render_buf.data(), g_obs_w, g_obs_h);
     *reward_ptr = step_data.reward;
     *first_ptr = (uint8_t)step_data.done;
     *(int32_t *)(info_bufs[info_name_to_offset.at("prev_level_seed")]) = (int32_t)(prev_level_seed);

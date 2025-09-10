@@ -2,6 +2,21 @@
 
 # Procgen Benchmark
 
+### Procgen with Adjustable Resolution
+This fork of Procgen adds the ability to change the resolution of the environment.  This is done by adding two new environment options: `width` and `height`.  The default values are `width=64` and `height=64` which matches the original Procgen environments.
+You can set these to other values (e.g. `obs_width=128` and `obs_height=128`) when creating the environment.
+For example, instead of rendering with the default 64x64 resolution, you can create a 128x128 environment like this:
+
+```python
+envs = ProcgenGym3Env(
+        num=4,
+        env_name='coinrun',
+        obs_width=128,
+        obs_height=128
+)
+```
+This change allows you to experiment with different input resolutions for your RL agents.
+
 #### [[Blog Post]](https://openai.com/blog/procgen-benchmark/) [[Paper]](https://arxiv.org/abs/1912.01588)
 
 16 simple-to-use procedurally-generated [gym](https://github.com/openai/gym) environments which provide a direct measure of how quickly a reinforcement learning agent learns generalizable skills.  The environments run at high speed (thousands of steps per second) on a single core.

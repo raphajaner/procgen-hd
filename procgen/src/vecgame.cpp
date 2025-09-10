@@ -167,6 +167,9 @@ inline uint32_t hash_str_uint32(const std::string &str) {
 }
 
 VecGame::VecGame(int _nenvs, VecOptions opts) {
+    int obs_width  = kDefaultObsW;
+    int obs_height = kDefaultObsH;
+
     render_human = false;
     num_envs = _nenvs;
     games.resize(num_envs);
@@ -188,6 +191,11 @@ VecGame::VecGame(int _nenvs, VecOptions opts) {
     opts.consume_int("num_threads", &num_threads);
     opts.consume_string("resource_root", &resource_root);
     opts.consume_bool("render_human", &render_human);
+
+    opts.consume_int("obs_width",  &obs_width);
+    opts.consume_int("obs_height", &obs_height);
+    // Set global size BEFORE making any games or threads.
+    SetGlobalObservationSize(obs_width, obs_height);
 
     std::call_once(global_init_flag, global_init, rand_seed,
                    resource_root);
@@ -214,8 +222,8 @@ VecGame::VecGame(int _nenvs, VecOptions opts) {
         strcpy(s.name, "rgb");
         s.scalar_type = LIBENV_SCALAR_TYPE_DISCRETE;
         s.dtype = LIBENV_DTYPE_UINT8;
-        s.shape[0] = RES_W;
-        s.shape[1] = RES_H;
+        s.shape[0] = obs_width;
+        s.shape[1] = obs_height;
         s.shape[2] = 3;
         s.ndim = 3;
         s.low.uint8 = 0;
