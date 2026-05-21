@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11
+
+* Support for configurable/adjustable observation resolutions via `obs_width` and `obs_height` parameters (Procgen-HD)
+
 ## 0.10.7
 
 * Custom `ToBaselinesVecEnv` to support `VecVideoRecorder` from @bragajj: https://github.com/openai/procgen/pull/62

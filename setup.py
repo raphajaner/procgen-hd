@@ -83,7 +83,7 @@ asset_paths = glob.glob(os.path.join(PACKAGE_ROOT, "data", "**"), recursive=True
 asset_relpaths = [os.path.relpath(path, PACKAGE_ROOT) for path in asset_paths]
 
 setup(
-    name="procgen",
+    name="procgen-hd",
     packages=find_packages(),
     version=version,
     install_requires=[
@@ -104,8 +104,8 @@ setup(
     cmdclass={"build_ext": custom_build_ext},
 
     author="OpenAI",
-    description="Procedurally Generated Game-Like RL Environments",
+    description="Procedurally Generated Game-Like RL Environments with Adjustable Resolution (Procgen-HD)",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/openai/procgen",
+    url="https://github.com/raphajaner/procgen-hd",
 )

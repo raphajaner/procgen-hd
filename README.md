@@ -1,13 +1,53 @@
-**Status:** Maintenance (expect bug fixes and minor updates)
+# Procgen-HD: Procgen with Adjustable Resolution
 
-# Procgen Benchmark
+**Procgen-HD** is an extension of the original Procgen benchmark that supports **adjustable observation resolutions** while keeping identical game logic, level generation, and reward structures.
 
-### Procgen with Adjustable Resolution
-This fork of Procgen adds the ability to change the resolution of the environment.  This is done by adding two new environment options: `width` and `height`.  The default values are `width=64` and `height=64` which matches the original Procgen environments.
-You can set these to other values (e.g. `obs_width=128` and `obs_height=128`) when creating the environment.
-For example, instead of rendering with the default 64x64 resolution, you can create a 128x128 environment like this:
+As illustrated in **Figure 1**, Procgen-HD renders environments natively at the desired target resolution: from low resolutions (e.g., $48 \times 48$) to high resolutions (e.g., $112 \times 112$) and beyond.
+The aspect ratio and field of view (FOV) are preserved, i.e., the agent sees the same level boundaries and assets; only the pixel density and visual fidelity scale.
+
+<p align="center">
+    <img src="screenshots/procgen_hd_overview.png" width="800px" alt="Procgen-HD Overview">
+</p>
+<p align="center">
+    <em>Figure 1: Native rendering at different observation resolutions (from 48x48 up to 112x112) in Procgen-HD.</em>
+</p>
+
+### Publication
+This extension was introduced in the [paper](https://arxiv.org/abs/2605.10546): **"Higher Resolution, Better Generalization: Unlocking Visual Scaling in Deep Reinforcement Learning"**.
+
+If you use this extension in your research, please consider citing the paper:
+
+```bibtex
+@misc{trumpp2026higherresolutionbettergeneralization,
+      title={Higher Resolution, Better Generalization: Unlocking Visual Scaling in Deep Reinforcement Learning}, 
+      author={Raphael Trumpp and Ömer Veysel Çağatan and Barış Akgün and Marco Caccamo},
+      year={2026},
+      eprint={2605.10546},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2605.10546}, 
+}
+```
+
+### Why Procgen-HD?
+In deep reinforcement learning (RL), visual observations are traditionally downsampled heavily (e.g., to $64 \times 64$ pixels).
+We challenge this convention and show in our paper that **resolution is a critical variable:** Scaling up observation resolution (e.g., up to $112 \times 112$) can significantly improve both the performance and visual generalization of RL agents.
+
+
+### Key Updates / Consistency
+- **Configurable Resolutions:** You can now instantiate environments with custom resolutions by specifying `obs_width` and `obs_height`. The default remains `64x64` to match the original benchmark.
+- **Identical Semantics:** Underlying environments, assets, logic, physics, and level distribution modes are kept completely identical to preserve scientific validity.
+- **Identical FOV:** Rendering at different resolutions scales the pixel density natively without altering the aspect ratio or field of view (FOV).
+
+
+---
+
+### Usage Example
+
+Instead of rendering with the default 64x64 resolution, you can create a 128x128 environment like this:
 
 ```python
+from procgen import ProcgenGym3Env
 envs = ProcgenGym3Env(
         num=4,
         env_name='coinrun',
@@ -15,9 +55,12 @@ envs = ProcgenGym3Env(
         obs_height=128
 )
 ```
+
 This change allows you to experiment with different input resolutions for your RL agents.
 
-#### [[Blog Post]](https://openai.com/blog/procgen-benchmark/) [[Paper]](https://arxiv.org/abs/1912.01588)
+# Original Description (Updated)
+**Status:** Underlying Procgen backbone is in "maintenance" mode
+#### [[Blog Post]](https://openai.com/blog/procgen-benchmark/) [[Original Paper]](https://arxiv.org/abs/1912.01588)
 
 16 simple-to-use procedurally-generated [gym](https://github.com/openai/gym) environments which provide a direct measure of how quickly a reinforcement learning agent learns generalizable skills.  The environments run at high speed (thousands of steps per second) on a single core.
 
@@ -60,13 +103,14 @@ python -c "import sys; assert (3,7,0) <= sys.version_info <= (3,10,0), 'python i
 python -c "import platform; assert platform.architecture()[0] == '64bit', 'python is not 64-bit'; print('ok')"
 ```
 
-To install the wheel:
+To install Procgen-HD, clone the repository and install from source in editable mode:
 
 ```
-pip install procgen
+git clone https://github.com/raphajaner/procgen-hd.git
+cd procgen-hd
+pip install -e .
 ```
 
-If you get an error like `"Could not find a version that satisfies the requirement procgen"`, please upgrade pip: `pip install --upgrade pip`.
 
 To try an environment out interactively:
 
@@ -108,7 +152,7 @@ docker run --rm -it procgen python -c "from procgen import ProcgenGym3Env; env =
 
 ## Environments
 
-The observation space is a box space with the RGB pixels the agent sees in a numpy array of shape (64, 64, 3).  The expected step rate for a human player is 15 Hz.
+The observation space is a box space with the RGB pixels the agent sees in a numpy array of shape `(obs_height, obs_width, 3)` (default is `(64, 64, 3)`). The expected step rate for a human player is 15 Hz.
 
 The action space is `Discrete(15)` for which button combo to press.  The button combos are defined in [`env.py`](procgen/env.py).
 
@@ -202,8 +246,8 @@ This returns a list of byte strings representing the state of each game in the v
 If you want to change the environments or create new ones, you should build from source.  You can get miniconda from https://docs.conda.io/en/latest/miniconda.html if you don't have it, or install the dependencies from [`environment.yml`](environment.yml) manually.  On Windows you will also need "Visual Studio 16 2019" installed.
 
 ```
-git clone git@github.com:openai/procgen.git
-cd procgen
+git clone https://github.com/raphajaner/procgen-hd.git
+cd procgen-hd
 conda env update --name procgen --file environment.yml
 conda activate procgen
 pip install -e .
@@ -282,7 +326,21 @@ See [ASSET_LICENSES](ASSET_LICENSES.md) for asset license information.
 
 # Citation
 
-Please cite using the following bibtex entry:
+If you use this benchmark, please cite the paper introducing Procgen-HD:
+
+```bibtex
+@misc{trumpp2026higherresolutionbettergeneralization,
+      title={Higher Resolution, Better Generalization: Unlocking Visual Scaling in Deep Reinforcement Learning}, 
+      author={Raphael Trumpp and Ömer Veysel Çağatan and Barış Akgün and Marco Caccamo},
+      year={2026},
+      eprint={2605.10546},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2605.10546}, 
+}
+```
+
+Please also cite the original Procgen paper:
 
 ```
 @article{cobbe2019procgen,
